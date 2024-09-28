@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID Verification</title>
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-storage.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-analytics.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCIyj03MelbK4GR3XvdipBs5y64Zh_pUf4",
+            authDomain: "credit-942c9.firebaseapp.com",
+            projectId: "credit-942c9",
+            storageBucket: "credit-942c9.appspot.com",
+            messagingSenderId: "935858462933",
+            appId: "1:935858462933:web:bf6a54593b30f4ee28025c",
+            measurementId: "G-1FMRDE8P0Y"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const storage = getStorage(app);
+
+        window.uploadImage = (inputId, fileName) => {
+            const fileInput = document.getElementById(inputId);
+            if (fileInput.files.length === 0) {
+                alert('Please select a file to upload.');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const storageRef = ref(storage, fileName);
+
+            uploadBytes(storageRef, file).then((snapshot) => {
+                console.log('Uploaded a blob or file!', snapshot);
+                getDownloadURL(snapshot.ref).then((downloadURL) => {
+                    console.log('File available at', downloadURL);
+                    document.getElementById('status').innerText = 'Upload successful: ' + downloadURL;
+                });
+            }).catch((error) => {
+                console.error('Upload failed:', error);
+                document.getElementById('status').innerText = 'Upload failed.';
+            });
+        };
+    </script>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .photo-container { margin: 20px 0; }
+    </style>
+</head>
+<body>
+
+<h1>ID Age Verification</h1>
+<p>Please take a photo of the front and back of your ID.</p>
+
+<div class="photo-container">
+    <label for="front-id">Front of ID:</label>
+    <input type="file" id="front-id" accept="image/*" capture="camera" required />
+    <button onclick="uploadImage('front-id', 'images/front-id-' + Date.now() + '.jpg')">Upload Front</button>
+</div>
+
+<div class="photo-container">
+    <label for="back-id">Back of ID:</label>
+    <input type="file" id="back-id" accept="image/*" capture="camera" required />
+    <button onclick="uploadImage('back-id', 'images/back-id-' + Date.now() + '.jpg')">Upload Back</button>
+</div>
+
+<div id="status"></div>
+
+</body>
+</html>
+
+</html>
+
+
+
+
